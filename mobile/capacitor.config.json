@@ -1,0 +1,12 @@
+{
+  "appId": "com.pulsebuilder.app",
+  "appName": "PulseBuilder",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

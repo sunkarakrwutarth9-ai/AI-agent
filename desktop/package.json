@@ -1,0 +1,42 @@
+{
+  "name": "pulsebuilder",
+  "version": "1.0.0",
+  "description": "PulseBuilder - AI Assistant for coding, browsing, and more",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win --x64",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder --win --linux"
+  },
+  "author": "PulseBuilder Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^39.2.7",
+    "electron-builder": "^26.4.0"
+  },
+  "build": {
+    "appId": "com.pulsebuilder.app",
+    "productName": "PulseBuilder",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!dist/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "logo.png"
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "icon": "logo.png"
+    }
+  }
+}
