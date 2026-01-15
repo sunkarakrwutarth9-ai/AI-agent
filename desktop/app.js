@@ -337,6 +337,20 @@ function addMessageToDOM(content, role) {
     });
 }
 
+function openInBrowser(url) {
+    let finalUrl = url;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        finalUrl = 'https://' + url;
+    }
+    document.getElementById('browser-url').value = finalUrl;
+    navigateTo();
+    // Switch to browser panel
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('[data-panel="browser"]').classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('browser-panel').classList.add('active');
+}
+
 function formatMessage(content) {
     // Convert markdown to HTML using marked
     if (typeof marked !== 'undefined') {
@@ -349,7 +363,10 @@ function formatMessage(content) {
             },
             breaks: true
         });
-        return marked.parse(content);
+        let html = marked.parse(content);
+        // Make URLs clickable and open in browser panel
+        html = html.replace(/(https?:\/\/[^\s<>"']+)/g, '<a href="#" onclick="openInBrowser(\'$1\'); return false;" style="color: #60a5fa; text-decoration: underline; cursor: pointer;">$1</a>');
+        return html;
     }
     return content.replace(/\n/g, '<br>');
 }

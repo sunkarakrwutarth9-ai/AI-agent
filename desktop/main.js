@@ -8,7 +8,8 @@ function createWindow() {
     icon: path.join(__dirname, 'logo.png'),
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      webviewTag: true
     },
     autoHideMenuBar: true,
     title: 'PulseBuilder - AI Assistant'

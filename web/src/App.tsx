@@ -358,6 +358,18 @@ Try it in the Code Editor!`;
     setTerminalInput('');
   };
 
+    const openInBrowser = (url: string) => {
+      let finalUrl = url;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        finalUrl = 'https://' + url;
+      }
+      setBrowserUrl(finalUrl);
+      setActivePanel('browser');
+    };
+
+    // Make this function available globally for onclick handlers
+    (window as unknown as { openInBrowser: (url: string) => void }).openInBrowser = openInBrowser;
+
     const formatMessage = (content: string) => {
       return content
         .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-gray-800 p-3 rounded my-2 overflow-x-auto"><code>$2</code></pre>')
@@ -367,6 +379,7 @@ Try it in the Code Editor!`;
         .replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold mt-3 mb-2">$1</h1>')
         .replace(/^## (.+)$/gm, '<h2 class="text-lg font-bold mt-2 mb-1">$1</h2>')
         .replace(/^- (.+)$/gm, '<li class="ml-4">$1</li>')
+        .replace(/(https?:\/\/[^\s<>"']+)/g, '<a href="#" onclick="window.openInBrowser(\'$1\'); return false;" class="text-blue-400 hover:text-blue-300 underline cursor-pointer">$1</a>')
         .replace(/\n/g, '<br/>');
     };
 
@@ -812,15 +825,23 @@ Try it in the Code Editor!`;
                             placeholder="Enter URL..."
                           />
                           {!previewHtml && (
-                            <button
-                              onClick={() => setBrowserUrl(browserUrl)}
-                              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
-                            >
-                              Go
-                            </button>
+                            <>
+                              <button
+                                onClick={() => setBrowserUrl(browserUrl)}
+                                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
+                              >
+                                Go
+                              </button>
+                              <button
+                                onClick={() => window.open(browserUrl, '_blank')}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                              >
+                                Open in New Tab
+                              </button>
+                            </>
                           )}
                         </div>
-                        <div className="flex-1 bg-white">
+                        <div className="flex-1 bg-white relative">
                           {previewHtml ? (
                             <iframe
                               srcDoc={previewHtml}
@@ -829,12 +850,17 @@ Try it in the Code Editor!`;
                               sandbox="allow-scripts"
                             />
                           ) : (
-                            <iframe
-                              src={browserUrl}
-                              className="w-full h-full border-0"
-                              title="Browser"
-                              sandbox="allow-scripts allow-same-origin allow-forms"
-                            />
+                            <>
+                              <iframe
+                                src={browserUrl}
+                                className="w-full h-full border-0"
+                                title="Browser"
+                                sandbox="allow-scripts allow-same-origin allow-forms"
+                              />
+                              <div className="absolute bottom-4 left-4 right-4 bg-gray-800 text-gray-300 p-3 rounded-lg text-sm opacity-90">
+                                Note: Some websites (like Google, Facebook, etc.) block being loaded in embedded frames for security. Use "Open in New Tab" to view them.
+                              </div>
+                            </>
                           )}
                         </div>
                       </div>
